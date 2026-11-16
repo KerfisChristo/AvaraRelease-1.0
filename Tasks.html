@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verkefni - Avara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/socket.io@4.8.3/client/dist/socket.io.min.js"></script>
+  <style>
+    :root {
+      --navy-900: #0a1628; --navy-800: #0f213e; --navy-700: #16305a; --navy-600: #1c3d68;
+      --blue-500: #2d5fd6; --blue-400: #4d7df0; --cyan-300: #67c1ff; --cyan-200: #9fe7ff;
+      --teal-500: #10b981; --teal-400: #34d399; --gold-400: #ffd166;
+      --ink-900: #0f172a; --ink-700: #334155; --ink-500: #64748b; --ink-300: #94a3b8;
+      --bg-soft: #f8fafc; --white: #ffffff;
+      --radius-lg: 24px; --radius-md: 16px; --radius-sm: 10px;
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --gradient-primary: linear-gradient(135deg, #0f213e 0%, #1c3d68 50%, #2d5fd6 100%);
+      --gradient-accent: linear-gradient(135deg, #67c1ff 0%, #2d5fd6 100%);
+      --bg-body: linear-gradient(180deg, #eef3fb 0%, #f7f7f7 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border: rgba(15, 23, 42, 0.08);
+      --text-primary: var(--ink-900);
+      --text-secondary: var(--ink-500);
+    }
+
+    html.dark {
+      --bg-body: linear-gradient(180deg, #0a1628 0%, #0f213e 100%);
+      --card-bg: rgba(15, 23, 42, 0.95);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --bg-soft: #0f213e;
+      --white: #0f213e;
+      --ink-900: #e2e8f0;
+      --ink-700: #cbd5e1;
+      --ink-500: #94a3b8;
+      --ink-300: #64748b;
+      --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      min-height: 100vh;
+      position: relative;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(45, 95, 214, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 80%, rgba(103, 193, 255, 0.1) 0%, transparent 55%);
+    }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #eef3fb; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #1c3d68, #2d5fd6); border-radius: 5px; }
+    ::selection { background: rgba(45, 95, 214, 0.2); }
+    :focus-visible { outline: 2px solid var(--blue-500); outline-offset: 2px; }
+
+    /* ===== NAV BAR ===== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      background: rgba(10, 22, 40, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      padding: 0 24px;
+      gap: 18px;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 12px; flex: 1; overflow-x: auto; }
+    .topbar-left::-webkit-scrollbar { display: none; }
+
+    .nav-tab {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 14px;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .nav-tab:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+    .nav-tab.active { background: rgba(45, 95, 214, 0.35); color: #fff; }
+
+    .logo-mini {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      color: #fff;
+      font-size: 18px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .logo-mini span { color: var(--cyan-300); }
+
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .icon-btn-nav {
+      position: relative;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #eaf4ff;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .icon-btn-nav:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-1px); }
+
+    .avatar-nav {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+    }
+
+    /* ===== MAIN ===== */
+    .shell {
+      max-width: 1400px;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      font-family: 'Sora', 'Inter', sans-serif;
+      color: var(--text-primary);
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    .btn-primary, .btn-secondary {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 8px 20px rgba(15, 33, 62, 0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15, 33, 62, 0.4); }
+
+    .btn-secondary {
+      background: var(--bg-soft);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--blue-500); color: var(--blue-500); }
+
+    /* ===== KANBAN ===== */
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .kanban-col {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      min-height: 400px;
+      transition: background 0.3s ease, border 0.3s ease;
+    }
+
+    .kanban-col-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kanban-col-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .kanban-col.todo .kanban-col-dot { background: #94a3b8; }
+    .kanban-col.in-progress .kanban-col-dot { background: #f59e0b; }
+    .kanban-col.done .kanban-col-dot { background: #10b981; }
+
+    .kanban-col-title {
+      font-weight: 800;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .kanban-count {
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--bg-soft);
+      border-radius: 999px;
+      padding: 2px 10px;
+      color: var(--text-secondary);
+    }
+
+    .task-card {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .task-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(45, 95, 214, 0.2);
+    }
+
+    .task-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .task-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .task-assignee {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 10px;
+    }
+
+    .priority-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .priority-badge.low { background: #d1fae5; color: #065f46; }
+    .priority-badge.medium { background: #fef3c7; color: #92400e; }
+    .priority-badge.high { background: #fee2e2; color: #991b1b; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      font-family: 'Sora', sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .field-group input, .field-group select, .field-group textarea {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: var(--white);
+      color: var(--text-primary);
+      transition: all 0.25s ease;
+    }
+    .field-group textarea { min-height: 80px; resize: vertical; }
+    .field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+      outline: none; border-color: var(--blue-500); box-shadow: 0 0 0 4px rgba(45, 95, 214, 0.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal-actions .btn-primary, .modal-actions .btn-secondary { flex: 1; justify-content: center; }
+
+    .danger-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .danger-btn:hover { background: #dc2626; transform: translateY(-1px); }
+
+    .empty-col {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    /* ===== TASK DETAILS ===== */
+    .task-detail-item { margin-bottom: 8px; font-size: 14px; color: var(--text-primary); }
+    .task-detail-item strong { color: var(--text-secondary); font-weight: 600; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    @media (max-width: 900px) {
+      .kanban { grid-template-columns: 1fr; }
+      .topbar { padding: 0 12px; }
+      .topbar-left { overflow-x: auto; }
+      .nav-tab { padding: 8px 10px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topbar">
+    <div class="topbar-left">
+      <a class="logo-mini" href="Home.html">A<span>vara</span></a>
+      <a class="nav-tab" href="Employee.html">🏠 Heim</a>
+      <a class="nav-tab" href="chat.html">💬 Spjall</a>
+      <a class="nav-tab active" href="Tasks.html">✅ Verkefni</a>
+      <a class="nav-tab" href="Announcements.html">📢 Tilkynningar</a>
+      <a class="nav-tab" href="Calendar.html">📅 Dagatal</a>
+      <a class="nav-tab" href="Documents.html">📁 Skjöl</a>
+      <a class="nav-tab" href="Profile.html">👤 Prófíll</a>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn-nav" id="notificationBell" title="Tilkynningar">🔔</button>
+      <button class="icon-btn-nav" id="darkModeToggle" title="Dark mode">🌙</button>
+      <div class="avatar-nav" id="userAvatar" title="Prófíll" onclick="location.href='Profile.html'">?</div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <div class="page-header">
+      <div>
+        <h1>Verkefnaborð</h1>
+        <p>Stjórnaðu verkefnum teymisins með Kanban borði.</p>
+      </div>
+      <button class="btn-primary" onclick="openCreateModal()">+ Nýtt verkefni</button>
+    </div>
+
+    <div class="kanban" id="kanbanBoard">
+      <div class="kanban-col todo">
+        <div class="kanban-col-header">
+          <span class="kanban-col-dot"></span>
+          <span class="kanban-col-title">Til að gera</span>
+          <span class="kanban-count" id="countTodo">0</span>
+        </div>
+        <div class="kanban-col-body" id="colTodo">
+          <div class="empty-col">Engin verkefni</div>
+        </div>
+      </div>
+      <div class="kanban-col in-progress">
+        <div class="kanban-col-header">
+          <span class="kanban-col-dot"></span>
+          <span class="kanban-col-title">Í vinnslu</span>
+          <span class="kanban-count" id="countInProgress">0</span>
+        </div>
+        <div class="kanban-col-body" id="colInProgress">
+          <div class="empty-col">Engin verkefni</div>
+        </div>
+      </div>
+      <div class="kanban-col done">
+        <div class="kanban-col-header">
+          <span class="kanban-col-dot"></span>
+          <span class="kanban-col-title">Lokið</span>
+          <span class="kanban-count" id="countDone">0</span>
+        </div>
+        <div class="kanban-col-body" id="colDone">
+          <div class="empty-col">Engin verkefni</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Create Task Modal -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal">
+      <h2>Nýtt verkefni</h2>
+      <form id="taskForm">
+        <div class="field-group">
+          <label for="taskTitle">Titill</label>
+          <input type="text" id="taskTitle" required placeholder="Sláðu inn titil verkefnis" />
+        </div>
+        <div class="field-group">
+          <label for="taskDesc">Lýsing</label>
+          <textarea id="taskDesc" placeholder="Lýsing á verkefninu..."></textarea>
+        </div>
+        <div class="field-group">
+          <label for="taskStatus">Staða</label>
+          <select id="taskStatus">
+            <option value="todo">Til að gera</option>
+            <option value="in-progress">Í vinnslu</option>
+            <option value="done">Lokið</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="taskPriority">Forgangur</label>
+          <select id="taskPriority">
+            <option value="low">Lágur</option>
+            <option value="medium" selected>Miðlungs</option>
+            <option value="high">Hár</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="taskAssignee">Úthlutað til</label>
+          <select id="taskAssignee"></select>
+        </div>
+        <div class="field-group">
+          <label for="taskDueDate">Frestur</label>
+          <input type="date" id="taskDueDate" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" onclick="closeModal('createModal')">Hætta við</button>
+          <button class="btn-primary" type="submit">Búa til</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Task Detail Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal">
+      <h2 id="detailTitle"></h2>
+      <div id="detailBody"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="changeStatus('todo')">⬅ Til að gera</button>
+        <button class="btn-secondary" onclick="changeStatus('in-progress')">▶ Í vinnslu</button>
+        <button class="btn-secondary" onclick="changeStatus('done')">✔ Lokið</button>
+      </div>
+      <div class="modal-actions">
+        <button class="danger-btn" onclick="deleteTask()">🗑 Eyða</button>
+        <button class="btn-primary" onclick="closeModal('detailModal')">Loka</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let currentTask = null;
+    let users = [];
+
+    function initials(name) {
+      return (name || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    function priorityLabel(p) { return { low: 'Lágur', medium: 'Miðlungs', high: 'Hár' }[p] || p; }
+
+    function renderTasks(tasks) {
+      const cols = { todo: [], 'in-progress': [], done: [] };
+      tasks.forEach(t => {
+        if (cols[t.status]) cols[t.status].push(t);
+      });
+
+      document.getElementById('countTodo').textContent = cols.todo.length;
+      document.getElementById('countInProgress').textContent = cols['in-progress'].length;
+      document.getElementById('countDone').textContent = cols.done.length;
+
+      ['todo', 'in-progress', 'done'].forEach(status => {
+        const el = document.getElementById(status === 'in-progress' ? 'colInProgress' : status === 'done' ? 'colDone' : 'colTodo');
+        if (!cols[status].length) {
+          el.innerHTML = '<div class="empty-col">Engin verkefni</div>';
+          return;
+        }
+        el.innerHTML = cols[status].map(t => `
+          <div class="task-card" onclick="openDetail(${t.id})">
+            <div class="task-title">${app.escapeHtml(t.title)}</div>
+            ${t.description ? `<div class="task-desc">${app.escapeHtml(t.description)}</div>` : ''}
+            <div class="task-meta">
+              <span class="priority-badge ${t.priority}">${priorityLabel(t.priority)}</span>
+              <span class="task-assignee">
+                ${t.assigneeName
+                  ? `<span class="task-avatar" style="background:${t.assigneeColor || '#2d5fd6'}">${initials(t.assigneeName)}</span><span>${app.escapeHtml(t.assigneeName)}</span>`
+                  : '<span>Óúthlutað</span>'}
+              </span>
+            </div>
+            ${t.due_date ? `<div class="task-meta" style="margin-top:8px;">📅 ${new Date(t.due_date).toLocaleDateString('is-IS')}</div>` : ''}
+          </div>
+        `).join('');
+      });
+    }
+
+    async function loadTasks() {
+      try {
+        const response = await app.apiFetch('/api/tasks');
+        const payload = await app.parseJson(response);
+        if (!response.ok || !payload.ok) throw new Error(payload.error);
+        renderTasks(payload.tasks);
+      } catch (e) {
+        app.toast(e.message, 'error');
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const response = await app.apiFetch('/api/users');
+        const payload = await app.parseJson(response);
+        if (!response.ok || !payload.ok) throw new Error(payload.error);
+        users = payload.users;
+        const select = document.getElementById('taskAssignee');
+        select.innerHTML = '<option value="">Óúthlutað</option>' + users.map(u =>
+          `<option value="${u.id}">${app.escapeHtml(u.name || u.email)}</option>`
+        ).join('');
+      } catch (e) {}
+    }
+
+    function openCreateModal() {
+      document.getElementById('taskForm').reset();
+      document.getElementById('createModal').classList.add('open');
+      document.getElementById('taskTitle').focus();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function openDetail(id) {
+      const task = window.tasks.find(t => t.id === id);
+      if (!task) return;
+      currentTask = task;
+      document.getElementById('detailTitle').textContent = task.title;
+      document.getElementById('detailBody').innerHTML = `
+        ${task.description ? `<div class="task-detail-item"><strong>Lýsing:</strong> ${app.escapeHtml(task.description)}</div>` : ''}
+        <div class="task-detail-item"><strong>Forgangur:</strong> <span class="priority-badge ${task.priority}">${priorityLabel(task.priority)}</span></div>
+        <div class="task-detail-item"><strong>Úthlutað til:</strong> ${task.assigneeName ? app.escapeHtml(task.assigneeName) : 'Óúthlutað'}</div>
+        ${task.due_date ? `<div class="task-detail-item"><strong>Frestur:</strong> ${new Date(task.due_date).toLocaleDateString('is-IS')}</div>` : ''}
+        <div class="task-detail-item"><strong>Búið til:</strong> ${app.formatDate(task.created_at)}</div>
+      `;
+      document.getElementById('detailModal').classList.add('open');
+    }
+
+    async function changeStatus(status) {
+      if (!currentTask) return;
+      try {
+        const response = await app.apiFetch(`/api/tasks/${currentTask.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        const payload = await app.parseJson(response);
+        if (!response.ok || !payload.ok) throw new Error(payload.error);
+        app.toast('Stöðu verkefnis breytt');
+        closeModal('detailModal');
+        await loadTasks();
+      } catch (e) {
+        app.toast(e.message, 'error');
+      }
+    }
+
+    async function deleteTask() {
+      if (!currentTask) return;
+      if (!confirm('Ertu viss um að þú viljir eyða þessu verkefni?')) return;
+      try {
+        const response = await app.apiFetch(`/api/tasks/${currentTask.id}`, { method: 'DELETE' });
+        const payload = await app.parseJson(response);
+        if (!response.ok || !payload.ok) throw new Error(payload.error);
+        app.toast('Verkefni eyddist');
+        closeModal('detailModal');
+        await loadTasks();
+      } catch (e) {
+        app.toast(e.message, 'error');
+      }
+    }
+
+    document.getElementById('taskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const task = {
+        title: document.getElementById('taskTitle').value.trim(),
+        description: document.getElementById('taskDesc').value.trim(),
+        status: document.getElementById('taskStatus').value,
+        priority: document.getElementById('taskPriority').value,
+        assigneeId: document.getElementById('taskAssignee').value ? Number(document.getElementById('taskAssignee').value) : null,
+        dueDate: document.getElementById('taskDueDate').value || null
+      };
+
+      try {
+        const response = await app.apiFetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(task)
+        });
+        const payload = await app.parseJson(response);
+        if (!response.ok || !payload.ok) throw new Error(payload.error);
+        app.toast('Verkefni búið til!');
+        closeModal('createModal');
+        await loadTasks();
+      } catch (err) {
+        app.toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('darkModeToggle').addEventListener('click', () => app.toggleDarkMode());
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await app.ensureLoggedIn();
+      if (!user) return;
+
+      const avatar = document.getElementById('userAvatar');
+      if (user.avatarUrl) {
+        avatar.style.backgroundImage = `url(${user.avatarUrl})`;
+      } else {
+        avatar.style.background = user.avatarColor || '#2d5fd6';
+        avatar.textContent = initials(user.name || user.email);
+      }
+
+      app.user = user;
+      app.init();
+      await loadUsers();
+      await loadTasks();
+      window.tasks = [];
+    });
+
+    // Keep a copy for detail modal
+    const origLoad = loadTasks;
+    loadTasks = async () => {
+      const response = await app.apiFetch('/api/tasks');
+      const payload = await app.parseJson(response);
+      if (payload.ok) {
+        window.tasks = payload.tasks;
+        renderTasks(payload.tasks);
+      }
+    };
+  </script>
+</body>
+</html>

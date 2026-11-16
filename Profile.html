@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prófíll - Avara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy-900: #0a1628;
+      --navy-800: #0f213e;
+      --navy-700: #16305a;
+      --navy-600: #1c3d68;
+      --blue-500: #2d5fd6;
+      --blue-400: #4d7df0;
+      --cyan-300: #67c1ff;
+      --cyan-200: #9fe7ff;
+      --teal-500: #10b981;
+      --teal-400: #34d399;
+      --gold-400: #ffd166;
+      --ink-900: #0f172a;
+      --ink-700: #334155;
+      --ink-500: #64748b;
+      --ink-300: #94a3b8;
+      --bg-soft: #f8fafc;
+      --white: #ffffff;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --gradient-primary: linear-gradient(135deg, #0f213e 0%, #1c3d68 50%, #2d5fd6 100%);
+      --gradient-accent: linear-gradient(135deg, #67c1ff 0%, #2d5fd6 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #eef3fb 0%, #f7f7f7 100%);
+      color: var(--ink-900);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(45, 95, 214, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 80%, rgba(103, 193, 255, 0.1) 0%, transparent 55%);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #eef3fb;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #1c3d68, #2d5fd6);
+      border-radius: 5px;
+      border: 2px solid #eef3fb;
+    }
+
+    ::selection {
+      background: rgba(45, 95, 214, 0.2);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--blue-500);
+      outline-offset: 2px;
+    }
+
+    .shell {
+      max-width: 1060px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--blue-500);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--navy-600);
+      transform: translateX(-4px);
+    }
+
+    /* ===== COVER ===== */
+    .cover {
+      height: 190px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: var(--gradient-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(159, 231, 255, 0.35), transparent 55%),
+        radial-gradient(circle at 20% 85%, rgba(16, 185, 129, 0.18), transparent 50%);
+    }
+
+    .cover-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.5;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+    }
+
+    .cover-badge {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #eaf4ff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .cover-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal-400);
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.9);
+    }
+
+    .profile-card {
+      background: white;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 0 36px 36px;
+      position: relative;
+    }
+
+    .avatar-wrap {
+      position: absolute;
+      top: -60px;
+      left: 36px;
+    }
+
+    .avatar {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      border: 6px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.7rem;
+      font-weight: 800;
+      box-shadow: 0 16px 36px rgba(17, 24, 39, 0.25);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .avatar-status {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--teal-400);
+      border: 4px solid white;
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.8);
+      z-index: 2;
+    }
+
+    .avatar-upload-btn {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--ink-900);
+      color: white;
+      border: 3px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .avatar-upload-btn:hover {
+      background: var(--blue-500);
+      transform: scale(1.1);
+    }
+
+    .avatar-upload-btn input {
+      display: none;
+    }
+
+    .profile-header {
+      padding-top: 78px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .profile-header h1 {
+      margin: 0 0 4px;
+      font-size: 1.7rem;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      color: var(--ink-900);
+      font-family: 'Sora', 'Inter', sans-serif;
+    }
+
+    .profile-header .email {
+      color: var(--ink-500);
+      font-size: 0.9rem;
+    }
+
+    .role-pill {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    .role-pill.owner { background: #fde68a; color: #92400e; }
+    .role-pill.admin { background: #bfdbfe; color: #1e3a8a; }
+    .role-pill.employee { background: #e5e7eb; color: #374151; }
+
+    .member-since {
+      font-size: 0.8rem;
+      color: var(--ink-300);
+      margin-top: 8px;
+    }
+
+    .contact-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .contact-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-soft);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-700);
+    }
+
+    /* ===== COMPLETION ===== */
+    .completion-card {
+      margin-top: 26px;
+      background: linear-gradient(120deg, #f0f5ff 0%, #eaf9f2 100%);
+      border: 1px solid rgba(45, 95, 214, 0.12);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .completion-ring {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .completion-ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .completion-ring .ring-bg {
+      stroke: rgba(45, 95, 214, 0.12);
+    }
+
+    .completion-ring .ring-fill {
+      stroke: url(#ringGradient);
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+
+    .completion-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--navy-800);
+    }
+
+    .completion-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .completion-info strong {
+      display: block;
+      font-size: 0.98rem;
+      color: var(--ink-900);
+      margin-bottom: 3px;
+    }
+
+    .completion-info span {
+      font-size: 0.83rem;
+      color: var(--ink-500);
+      line-height: 1.5;
+    }
+
+    /* ===== STATS ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 26px;
+    }
+
+    .stat-box {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      text-align: center;
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-accent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(45, 95, 214, 0.16);
+    }
+
+    .stat-box:hover::before {
+      opacity: 1;
+    }
+
+    .stat-icon {
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.65rem;
+      color: var(--blue-500);
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+
+    .stat-box span {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-500);
+      font-weight: 600;
+    }
+
+    /* ===== PANELS ===== */
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 26px;
+    }
+
+    .panel {
+      background: var(--bg-soft);
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      border-radius: var(--radius-md);
+      padding: 26px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .panel:hover {
+      border-color: rgba(45, 95, 214, 0.18);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel h2 {
+      margin: 0 0 18px;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      color: var(--ink-900);
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--ink-700);
+      margin-bottom: 6px;
+    }
+
+    .field-group input,
+    .field-group textarea {
+      width: 100%;
+      border: 2px solid rgba(15, 23, 42, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: white;
+      transition: all 0.25s ease;
+    }
+
+    .field-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 4px rgba(45, 95, 214, 0.1);
+    }
+
+    .field-hint {
+      font-size: 0.72rem;
+      color: var(--ink-300);
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    .save-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 24px;
+      background: var(--gradient-primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(15, 33, 62, 0.25);
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(15, 33, 62, 0.35);
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: none;
+    }
+
+    .status-msg.success { display: block; color: #0f6d3d; }
+    .status-msg.error { display: block; color: #b3261e; }
+
+    .avatar-swatches {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .swatch {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .swatch:hover { transform: scale(1.15); }
+    .swatch.selected { border-color: var(--ink-900); box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); }
+
+    /* Password strength */
+    .pw-strength {
+      margin-top: 8px;
+    }
+
+    .pw-strength-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .pw-strength-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: #e0245e;
+      transition: all 0.35s ease;
+    }
+
+    .pw-strength-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--ink-500);
+      margin-top: 5px;
+    }
+
+    /* Quick actions */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .quick-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding: 16px 8px;
+      background: white;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-3px);
+      border-color: rgba(45, 95, 214, 0.3);
+      box-shadow: 0 8px 18px rgba(45, 95, 214, 0.12);
+    }
+
+    .quick-link .q-icon {
+      font-size: 1.4rem;
+    }
+
+    .quick-link .q-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
+    /* Achievements */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .achievement {
+      background: white;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 14px 8px;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .achievement.unlocked {
+      border-color: rgba(255, 209, 102, 0.6);
+      background: linear-gradient(160deg, #fffdf4 0%, #fff8e1 100%);
+    }
+
+    .achievement.unlocked:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 18px rgba(255, 193, 7, 0.2);
+    }
+
+    .achievement.locked {
+      opacity: 0.45;
+      filter: grayscale(1);
+    }
+
+    .achievement .a-icon {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+
+    .achievement .a-name {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--ink-900);
+    }
+
+    .achievement .a-desc {
+      font-size: 0.65rem;
+      color: var(--ink-500);
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    /* Notification toggles */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .toggle-info strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--ink-900);
+    }
+
+    .toggle-info span {
+      font-size: 0.75rem;
+      color: var(--ink-500);
+    }
+
+    .switch {
+      position: relative;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .switch input:checked + .slider {
+      background: var(--gradient-accent);
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .panels { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .profile-card { padding: 0 20px 24px; }
+      .avatar-wrap { left: 20px; }
+      .quick-grid, .achievements-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <a class="back-link" id="backLink" href="admin.html">&larr; Til baka</a>
+
+    <div class="cover">
+      <div class="cover-pattern"></div>
+      <div class="cover-badge">Á netinu</div>
+    </div>
+    <div class="profile-card">
+      <div class="avatar-wrap">
+        <div class="avatar" id="avatarCircle">?</div>
+        <span class="avatar-status" title="Á netinu"></span>
+        <label class="avatar-upload-btn" title="Hlaða upp mynd">
+          📷
+          <input type="file" id="avatarFileInput" accept="image/png,image/jpeg,image/webp,image/gif" />
+        </label>
+      </div>
+
+      <div class="profile-header">
+        <div>
+          <h1 id="displayName">&nbsp;</h1>
+          <div class="email" id="displayEmail"></div>
+          <span class="role-pill" id="roleBadge"></span>
+          <div class="member-since" id="memberSince"></div>
+          <div class="contact-chips" id="contactChips"></div>
+        </div>
+      </div>
+
+      <!-- Profile completion -->
+      <div class="completion-card">
+        <div class="completion-ring">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <defs>
+              <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#67c1ff" />
+                <stop offset="100%" stop-color="#2d5fd6" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="32" cy="32" r="26" fill="none" stroke-width="7" />
+            <circle class="ring-fill" id="completionRing" cx="32" cy="32" r="26" fill="none" stroke-width="7" stroke-dasharray="163.4" stroke-dashoffset="163.4" />
+          </svg>
+          <div class="completion-pct" id="completionPct">0%</div>
+        </div>
+        <div class="completion-info">
+          <strong id="completionTitle">Ljúktu við prófílinn þinn</strong>
+          <span id="completionHint">Fylltu út upplýsingarnar þínar til að teymið þitt þekki þig betur.</span>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-icon">💬</div>
+          <strong id="statMessages">0</strong>
+          <span>Skilaboð send</span>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">🗨️</div>
+          <strong id="statConversations">0</strong>
+          <span>Spjöll</span>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">👥</div>
+          <strong id="statGroups">0</strong>
+          <span>Hópar</span>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">✅</div>
+          <strong id="statTasks">0</strong>
+          <span>Verkefni</span>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <h2>👤 Um mig</h2>
+          <form id="profileForm">
+            <div class="field-group">
+              <label for="nameInput">Fullt nafn</label>
+              <input type="text" id="nameInput" required />
+            </div>
+            <div class="field-group">
+              <label for="bioInput">Stutt lýsing</label>
+              <textarea id="bioInput" maxlength="280" placeholder="Segðu okkur aðeins frá þér..."></textarea>
+              <div class="field-hint" id="bioCounter">0/280</div>
+            </div>
+            <div class="field-group">
+              <label for="departmentInput">Deild</label>
+              <input type="text" id="departmentInput" placeholder="t.d. Fjármál, Markaðssetning" />
+            </div>
+            <div class="field-group">
+              <label for="phoneInput">Símanúmer</label>
+              <input type="tel" id="phoneInput" placeholder="+354 555-1234" />
+            </div>
+            <div class="field-group">
+              <label for="locationInput">Staðsetning</label>
+              <input type="text" id="locationInput" placeholder="t.d. Reykjavík" />
+            </div>
+            <div class="field-group">
+              <label>Litur á prófílmynd</label>
+              <div class="avatar-swatches" id="avatarSwatches"></div>
+            </div>
+            <button class="save-btn" type="submit">Vista breytingar</button>
+            <p class="status-msg" id="profileStatus"></p>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>🔒 Öryggi</h2>
+          <form id="passwordForm">
+            <div class="field-group">
+              <label for="currentPassword">Núverandi lykilorð</label>
+              <input type="password" id="currentPassword" required />
+            </div>
+            <div class="field-group">
+              <label for="newPassword">Nýtt lykilorð</label>
+              <input type="password" id="newPassword" minlength="6" required />
+              <div class="pw-strength">
+                <div class="pw-strength-track">
+                  <div class="pw-strength-fill" id="pwStrengthFill"></div>
+                </div>
+                <div class="pw-strength-label" id="pwStrengthLabel">Sláðu inn nýtt lykilorð</div>
+              </div>
+            </div>
+            <button class="save-btn" type="submit">Uppfæra lykilorð</button>
+            <p class="status-msg" id="passwordStatus"></p>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>⚡ Hraðaðgerðir</h2>
+          <div class="quick-grid">
+            <a class="quick-link" href="chat.html">
+              <span class="q-icon">💬</span>
+              <span class="q-label">Spjall</span>
+            </a>
+            <a class="quick-link" href="Tasks.html">
+              <span class="q-icon">✅</span>
+              <span class="q-label">Verkefni</span>
+            </a>
+            <a class="quick-link" href="Calendar.html">
+              <span class="q-icon">📅</span>
+              <span class="q-label">Dagatal</span>
+            </a>
+            <a class="quick-link" href="Notes.html">
+              <span class="q-icon">📝</span>
+              <span class="q-label">Minnispunktar</span>
+            </a>
+            <a class="quick-link" href="Leave.html">
+              <span class="q-icon">🌴</span>
+              <span class="q-label">Frí</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>🔔 Tilkynningar</h2>
+          <div id="notifPanel">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>Tölvupósttilkynningar</strong>
+                <span>Fáðu tölvupóst um ný skilaboð og atburði</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-notif="email" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>Skjátilkynningar</strong>
+                <span>Instant tilkynningar í vafranum</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-notif="desktop" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>Hljóð</strong>
+                <span>Spila hljóð þegar skilaboð berast</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-notif="sound" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>Vikuleg samantekt</strong>
+                <span>Yfirlit yfir vikuna sent á föstudögum</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-notif="weekly" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiBase = (location.port && location.port !== '3000') ? 'http://localhost:3000' : '';
+    function apiFetch(path, opts) {
+      const fetchOpts = { ...opts };
+      if (apiBase) {
+        fetchOpts.credentials = 'include';
+      }
+      return fetch((apiBase || '') + path, fetchOpts);
+    }
+
+    async function parseJsonResponse(response) {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    }
+
+    const roleLabels = { owner: 'Eigandi', admin: 'Yfirmaður', employee: 'Starfsmaður' };
+    const palette = ['#2d5fd6', '#0f766e', '#b45309', '#7c3aed', '#be123c', '#0f213e', '#0891b2', '#a16207'];
+    let currentUser = null;
+    let selectedColor = palette[0];
+    let latestStats = { messagesSent: 0, conversations: 0, groups: 0, tasks: 0 };
+
+    async function ensureLoggedIn() {
+      try {
+        const response = await apiFetch('/api/admin/session');
+        const payload = await parseJsonResponse(response);
+        if (!payload.loggedIn) {
+          window.location.href = 'Login.html';
+          return null;
+        }
+        return payload.user;
+      } catch (error) {
+        window.location.href = 'Login.html';
+        return null;
+      }
+    }
+
+    function initials(name) {
+      return (name || '?').split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    function renderSwatches() {
+      const wrap = document.getElementById('avatarSwatches');
+      wrap.innerHTML = palette.map((color) => `
+        <div class="swatch ${color === selectedColor ? 'selected' : ''}" style="background:${color}" data-color="${color}" onclick="selectColor('${color}')"></div>
+      `).join('');
+    }
+
+    function selectColor(color) {
+      selectedColor = color;
+      if (!currentUser || !currentUser.avatarUrl) {
+        document.getElementById('avatarCircle').style.background = color;
+      }
+      renderSwatches();
+    }
+    window.selectColor = selectColor;
+
+    function applyAvatarVisual(user) {
+      const avatar = document.getElementById('avatarCircle');
+      if (user.avatarUrl) {
+        avatar.style.backgroundImage = `url(${user.avatarUrl})`;
+        avatar.style.backgroundColor = 'transparent';
+        avatar.textContent = '';
+      } else {
+        avatar.style.backgroundImage = 'none';
+        avatar.style.background = selectedColor;
+        avatar.textContent = initials(user.name);
+      }
+    }
+
+    // ===== Profile completion =====
+    function completionData() {
+      if (!currentUser) return { pct: 0, missing: [] };
+      const fields = [
+        { key: 'name', label: 'nafn', filled: !!currentUser.name },
+        { key: 'bio', label: 'stutta lýsingu', filled: !!(currentUser.bio && currentUser.bio.trim()) },
+        { key: 'department', label: 'deild', filled: !!(currentUser.department && currentUser.department.trim()) },
+        { key: 'phone', label: 'símanúmer', filled: !!(currentUser.phone && currentUser.phone.trim()) },
+        { key: 'location', label: 'staðsetningu', filled: !!(currentUser.location && currentUser.location.trim()) },
+        { key: 'avatar', label: 'prófílmynd', filled: !!currentUser.avatarUrl }
+      ];
+      const filled = fields.filter((f) => f.filled).length;
+      const pct = Math.round((filled / fields.length) * 100);
+      const missing = fields.filter((f) => !f.filled).map((f) => f.label);
+      return { pct, missing };
+    }
+
+    function renderCompletion() {
+      const { pct, missing } = completionData();
+      const ring = document.getElementById('completionRing');
+      const circumference = 163.4;
+      ring.style.strokeDashoffset = circumference - (circumference * pct) / 100;
+      document.getElementById('completionPct').textContent = pct + '%';
+
+      const title = document.getElementById('completionTitle');
+      const hint = document.getElementById('completionHint');
+      if (pct >= 100) {
+        title.textContent = '🎉 Prófíllinn þinn er tilbúinn!';
+        hint.textContent = 'Frábært — teymið þitt hefur allar upplýsingar um þig.';
+      } else {
+        title.textContent = `Prófíll ${pct}% linn`;
+        hint.textContent = 'Bættu við: ' + missing.join(', ') + '.';
+      }
+    }
+
+    // ===== Contact chips =====
+    function renderContactChips() {
+      const wrap = document.getElementById('contactChips');
+      if (!currentUser) return;
+      const chips = [];
+      if (currentUser.email) chips.push(`<span class="contact-chip">✉️ ${currentUser.email}</span>`);
+      if (currentUser.phone) chips.push(`<span class="contact-chip">📞 ${currentUser.phone}</span>`);
+      if (currentUser.department) chips.push(`<span class="contact-chip">🏢 ${currentUser.department}</span>`);
+      if (currentUser.location) chips.push(`<span class="contact-chip">📍 ${currentUser.location}</span>`);
+      wrap.innerHTML = chips.join('');
+    }
+
+    function renderProfile(user) {
+      document.getElementById('displayName').textContent = user.name;
+      document.getElementById('displayEmail').textContent = user.email;
+      document.getElementById('roleBadge').textContent = roleLabels[user.role] || user.role;
+      document.getElementById('roleBadge').className = `role-pill ${user.role}`;
+      document.getElementById('nameInput').value = user.name || '';
+      document.getElementById('bioInput').value = user.bio || '';
+      document.getElementById('departmentInput').value = user.department || '';
+      document.getElementById('phoneInput').value = user.phone || '';
+      document.getElementById('locationInput').value = user.location || '';
+      selectedColor = user.avatarColor || palette[0];
+      currentUser = user;
+
+      applyAvatarVisual(user);
+      renderSwatches();
+      renderCompletion();
+      renderContactChips();
+      updateBioCounter();
+
+      if (user.createdAt) {
+        const date = new Date(user.createdAt).toLocaleDateString('is-IS', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('memberSince').textContent = `Meðlimur síðan ${date}`;
+      }
+
+      const backLink = document.getElementById('backLink');
+      backLink.href = (user.role === 'admin' || user.role === 'owner') ? 'admin.html' : 'Employee.html';
+    }
+
+    document.getElementById('avatarFileInput').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      try {
+        const response = await apiFetch('/api/profile/avatar', { method: 'POST', body: formData });
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to upload image');
+        }
+        renderProfile(payload.user);
+      } catch (error) {
+        alert(error.message || 'Ekki tókst að hlaða upp mynd.');
+      } finally {
+        event.target.value = '';
+      }
+    });
+
+    async function loadStats() {
+      try {
+        const response = await apiFetch('/api/profile/stats');
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) return;
+        latestStats = payload.stats;
+        document.getElementById('statMessages').textContent = payload.stats.messagesSent;
+        document.getElementById('statConversations').textContent = payload.stats.conversations;
+        document.getElementById('statGroups').textContent = payload.stats.groups;
+        if (document.getElementById('statTasks')) {
+          document.getElementById('statTasks').textContent = payload.stats.tasks || 0;
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      const bio = document.getElementById('bioInput').value.trim();
+      const department = document.getElementById('departmentInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const location = document.getElementById('locationInput').value.trim();
+      const statusEl = document.getElementById('profileStatus');
+
+      try {
+        const response = await apiFetch('/api/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, bio, department, phone, location, avatarColor: selectedColor })
+        });
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to save profile');
+        }
+        renderProfile(payload.user);
+        statusEl.textContent = 'Vistað!';
+        statusEl.className = 'status-msg success';
+      } catch (error) {
+        statusEl.textContent = error.message || 'Ekki tókst að vista.';
+        statusEl.className = 'status-msg error';
+      }
+    });
+
+    document.getElementById('passwordForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const statusEl = document.getElementById('passwordStatus');
+
+      try {
+        const response = await apiFetch('/api/profile/password', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to update password');
+        }
+        statusEl.textContent = 'Lykilorði breytt!';
+        statusEl.className = 'status-msg success';
+        event.target.reset();
+        updatePasswordStrength('');
+      } catch (error) {
+        statusEl.textContent = error.message || 'Ekki tókst að breyta lykilorði.';
+        statusEl.className = 'status-msg error';
+      }
+    });
+
+    // ===== Bio character counter =====
+    function updateBioCounter() {
+      const bio = document.getElementById('bioInput');
+      document.getElementById('bioCounter').textContent = `${bio.value.length}/280`;
+    }
+
+    document.getElementById('bioInput').addEventListener('input', updateBioCounter);
+
+    // ===== Password strength meter =====
+    function updatePasswordStrength(pw) {
+      const fill = document.getElementById('pwStrengthFill');
+      const label = document.getElementById('pwStrengthLabel');
+      let score = 0;
+      if (pw.length >= 6) score++;
+      if (pw.length >= 10) score++;
+      if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
+      if (/\d/.test(pw)) score++;
+      if (/[^a-zA-Z0-9]/.test(pw)) score++;
+
+      const levels = [
+        { pct: 0, color: '#e0245e', text: 'Sláðu inn nýtt lykilorð' },
+        { pct: 25, color: '#e0245e', text: 'Veikt lykilorð' },
+        { pct: 45, color: '#f59e0b', text: 'Miðlungs lykilorð' },
+        { pct: 65, color: '#f59e0b', text: 'Nokkuð sterkt' },
+        { pct: 85, color: '#10b981', text: 'Sterkt lykilorð' },
+        { pct: 100, color: '#10b981', text: 'Mjög sterkt lykilorð 💪' }
+      ];
+      const level = levels[pw.length === 0 ? 0 : score];
+      fill.style.width = level.pct + '%';
+      fill.style.background = level.color;
+      label.textContent = level.text;
+    }
+
+    document.getElementById('newPassword').addEventListener('input', (e) => updatePasswordStrength(e.target.value));
+
+    // ===== Notification preferences (saved locally) =====
+    const NOTIF_KEY = 'avara_notif_prefs';
+
+    function loadNotifPrefs() {
+      let prefs = {};
+      try {
+        prefs = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
+      } catch (e) {
+        prefs = {};
+      }
+      document.querySelectorAll('[data-notif]').forEach((input) => {
+        input.checked = !!prefs[input.dataset.notif];
+      });
+    }
+
+    document.querySelectorAll('[data-notif]').forEach((input) => {
+      input.addEventListener('change', () => {
+        let prefs = {};
+        try {
+          prefs = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
+        } catch (e) {
+          prefs = {};
+        }
+        prefs[input.dataset.notif] = input.checked;
+        localStorage.setItem(NOTIF_KEY, JSON.stringify(prefs));
+      });
+    });
+
+    loadNotifPrefs();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await ensureLoggedIn();
+      if (!currentUser) return;
+      renderProfile(currentUser);
+      await loadStats();
+    });
+  </script>
+</body>
+</html>

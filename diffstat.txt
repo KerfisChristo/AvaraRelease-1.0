@@ -1,0 +1,13 @@
+ .gitignore        |    1 +
+ Dashboard.html    |  681 +++++++--
+ Employee.html     |  588 +++++---
+ Home.html         | 1738 +++++++++++++++++------
+ Login.html        |  621 +++++++-
+ Profiles.html     |  329 ++++-
+ Signup.html       |  536 ++++++-
+ admin.html        |  355 ++++-
+ chat.html         | 1522 ++++++++++++++++----
+ package-lock.json |  464 +++++-
+ package.json      |    8 +
+ server.js         | 4088 ++++++++++++++++++++++++++++++++++++++++++++++-------
+ 12 files changed, 9218 insertions(+), 1713 deletions(-)

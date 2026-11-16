@@ -1,0 +1,32 @@
+
+=== LOGIN ===
+HTTP/1.1 200 OK
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Resource-Policy: same-origin
+Origin-Agent-Cluster: ?1
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-DNS-Prefetch-Control: off
+X-Download-Options: noopen
+X-Frame-Options: SAMEORIGIN
+X-Permitted-Cross-Domain-Policies: none
+X-XSS-Protection: 0
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+RateLimit-Policy: 20;w=900
+RateLimit-Limit: 20
+RateLimit-Remaining: 19
+RateLimit-Reset: 900
+Content-Type: application/json; charset=utf-8
+Content-Length: 297
+ETag: W/"129-KVToe+khQpYbBEyOGGFJWuxC8/4"
+Set-Cookie: connect.sid=s%3AGTbu5AgIxc5IAXnKjYrNuAOUWU6b7tpf.67fCboD7yECBpFM84GReT9U6Eti0rDuzldeR2AK5r%2BE; Path=/; Expires=Sat, 19 Sep 2026 18:45:53 GMT; HttpOnly; SameSite=Lax
+Vary: Accept-Encoding
+Date: Thu, 20 Aug 2026 18:45:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"ok":true,"redirect":"/admin.html","user":{"id":1,"email":"admin@avara.is","name":"Avara Owner","role":"owner","bio":"","avatarColor":"#0f766e","avatarUrl":"/avatars/1-7620ecd10ef15129.jpg","createdAt":"2026-08-17 23:46:43","department":"","phone":"","location":"","active":true,"lastSeen":null}}
+=== SESSION ===
+{"ok":true,"loggedIn":true,"user":{"id":1,"email":"admin@avara.is","name":"Avara Owner","role":"owner","bio":"","avatarColor":"#0f766e","avatarUrl":"/avatars/1-7620ecd10ef15129.jpg","createdAt":"2026-08-17 23:46:43","department":"","phone":"","location":"","active":true,"lastSeen":null}}

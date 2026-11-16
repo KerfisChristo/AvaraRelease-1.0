@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Avara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy-900: #0a1628;
+      --navy-800: #0f213e;
+      --navy-700: #16305a;
+      --navy-600: #1c3d68;
+      --blue-500: #2d5fd6;
+      --blue-400: #4d7df0;
+      --cyan-300: #67c1ff;
+      --cyan-200: #9fe7ff;
+      --teal-500: #10b981;
+      --teal-400: #34d399;
+      --gold-400: #ffd166;
+      --ink-900: #0f172a;
+      --ink-700: #334155;
+      --ink-500: #64748b;
+      --ink-300: #94a3b8;
+      --bg-soft: #f8fafc;
+      --white: #ffffff;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --gradient-primary: linear-gradient(135deg, #0f213e 0%, #1c3d68 50%, #2d5fd6 100%);
+      --gradient-accent: linear-gradient(135deg, #67c1ff 0%, #2d5fd6 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #eef3fb 0%, #f7f7f7 100%);
+      color: var(--ink-900);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(45, 95, 214, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 80%, rgba(103, 193, 255, 0.1) 0%, transparent 55%);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #eef3fb;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #1c3d68, #2d5fd6);
+      border-radius: 5px;
+      border: 2px solid #eef3fb;
+    }
+
+    ::selection {
+      background: rgba(45, 95, 214, 0.2);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--blue-500);
+      outline-offset: 2px;
+    }
+
+    .admin-shell {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--gradient-primary);
+      color: white;
+      padding: 20px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-header::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(103, 193, 255, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .admin-header h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      letter-spacing: -0.04em;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+      font-family: 'Sora', 'Inter', sans-serif;
+    }
+
+    .admin-header button,
+    .admin-header a {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      padding: 11px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+      transition: all 0.25s ease;
+      font-size: 13px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .admin-header button:hover,
+    .admin-header a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(11, 31, 54, 0.3);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .admin-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chat-btn {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      border-color: rgba(16, 185, 129, 0.3) !important;
+    }
+
+    .chat-btn:hover {
+      background: linear-gradient(135deg, #059669, #047857) !important;
+    }
+
+    .admin-content {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      padding: 32px;
+    }
+
+    .panel {
+      background: var(--bg-soft);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: border-color 0.3s ease;
+    }
+
+    .panel:hover {
+      border-color: rgba(45, 95, 214, 0.15);
+    }
+
+    .panel h2 {
+      margin: 0 0 20px;
+      font-size: 1.3rem;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      color: var(--ink-900);
+      font-family: 'Sora', 'Inter', sans-serif;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      font-weight: 700;
+      color: var(--ink-700);
+      font-size: 0.9rem;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      border: 2px solid rgba(15, 23, 42, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 1rem;
+      background: white;
+      color: var(--ink-900);
+      font-family: inherit;
+      transition: all 0.25s ease;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 4px rgba(45, 95, 214, 0.1);
+    }
+
+    .input-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .save-btn,
+    .reset-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .save-btn {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 8px 20px rgba(15, 33, 62, 0.3);
+    }
+
+    .reset-btn {
+      background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+      color: var(--ink-900);
+      border: 1px solid rgba(15,23,42,0.08);
+    }
+
+    .save-btn:hover,
+    .reset-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+    }
+
+    .preview {
+      background: linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%);
+    }
+
+    .preview-card {
+      border: 1px solid rgba(15,23,42,0.08);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .preview-card .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #f5f5f5 0%, #d9d9d9 12%, #141414 30%, #000000 50%, #141414 70%, #d9d9d9 88%, #f5f5f5 100%);
+      height: 58px;
+      padding: 0 18px;
+    }
+
+    .preview-card .topbar .pill {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .preview-content {
+      padding: 24px;
+    }
+
+    .preview-content h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1.5rem, 2vw, 2.4rem);
+      letter-spacing: -0.05em;
+      font-weight: 800;
+      color: var(--ink-900);
+    }
+
+    .preview-content p {
+      margin: 0;
+      color: var(--ink-500);
+      line-height: 1.7;
+    }
+
+    .preview-btn {
+      display: inline-block;
+      margin-top: 16px;
+      background: var(--gradient-primary);
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(15, 33, 62, 0.3);
+      transition: all 0.25s ease;
+    }
+
+    .preview-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(15, 33, 62, 0.4);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .admin-content {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .admin-header-actions {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-header">
+      <h1>Avara Admin Panel</h1>
+      <div class="admin-header-actions">
+        <button class="chat-btn" id="chatBtn" type="button">💬 Spjall</button>
+        <a href="Tasks.html">✅ Verkefni</a>
+        <a href="Announcements.html">📢 Tilkynningar</a>
+        <a href="Calendar.html">📅 Dagatal</a>
+        <a href="Documents.html">📁 Skjöl</a>
+        <a href="Notes.html">📝 Skýrslur</a>
+        <a href="Leave.html">🏖️ Frí</a>
+        <a href="Goals.html">🎯 Markmið</a>
+        <a href="Courses.html">🎓 Námskeið</a>
+        <a href="OrgChart.html">🏢 Stofnunartre</a>
+        <a href="Profile.html">🧑‍💼 Mín síða</a>
+        <a href="Dashboard.html">📊 Yfirlit</a>
+        <a href="Profiles.html">👤 Notendur</a>
+        <a href="Settings.html">⚙️ Stillingar</a>
+        <button id="darkModeToggle" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:white;padding:11px 18px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:700;">🌙</button>
+        <a href="Home.html">Heim</a>
+        <button id="logoutBtn" type="button">Útskrá</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <section class="panel">
+        <h2>Breyta efni á forsíðu</h2>
+
+        <form id="adminForm">
+          <div class="input-group">
+            <label for="headlineInput">Titill</label>
+            <input id="headlineInput" name="headline" type="text" />
+          </div>
+
+          <div class="input-group">
+            <label for="subtitleInput">Undirtitill</label>
+            <textarea id="subtitleInput" name="subtitle"></textarea>
+          </div>
+
+          <div class="input-group">
+            <label for="ctaInput">Texti hnapps</label>
+            <input id="ctaInput" name="ctaText" type="text" />
+          </div>
+
+          <div class="button-row">
+            <button class="save-btn" type="submit">Vista breytingar</button>
+            <button class="reset-btn" type="button" id="resetBtn">Endurstilla</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="panel preview">
+        <h2>Forskoðun</h2>
+
+        <div class="preview-card">
+          <div class="topbar">
+            <span class="pill"></span>
+          </div>
+
+          <div class="preview-content">
+            <h3 id="previewHeading">Avara hjálpar fyrirtækjum að vaxa</h3>
+            <p id="previewSubtitle">Við sjáum um bókhaldið svo þú getur einbeitt þér að vextinum.</p>
+            <a class="preview-btn" id="previewCta" href="#contact">Hafa samband</a>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Quick Actions -->
+    <div style="padding:0 32px 32px;">
+      <div class="panel" style="margin-bottom:24px;">
+        <h2>⚡ Fljótar aðgerðir</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+          <a href="Tasks.html" style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);text-decoration:none;color:var(--ink-900);transition:all 0.25s ease;border:1px solid var(--border);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+            <div style="width:40px;height:40px;border-radius:12px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:18px;">✅</div>
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Verkefni</div>
+              <div style="font-size:0.75rem;color:var(--ink-500);">Stjórna verkefnum</div>
+            </div>
+          </a>
+          <a href="Announcements.html" style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);text-decoration:none;color:var(--ink-900);transition:all 0.25s ease;border:1px solid var(--border);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+            <div style="width:40px;height:40px;border-radius:12px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:18px;">📢</div>
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Tilkynningar</div>
+              <div style="font-size:0.75rem;color:var(--ink-500);">Birta tilkynningar</div>
+            </div>
+          </a>
+          <a href="Profiles.html" style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);text-decoration:none;color:var(--ink-900);transition:all 0.25s ease;border:1px solid var(--border);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+            <div style="width:40px;height:40px;border-radius:12px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Notendur</div>
+              <div style="font-size:0.75rem;color:var(--ink-500);">Stjórna notendum</div>
+            </div>
+          </a>
+          <a href="Dashboard.html" style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);text-decoration:none;color:var(--ink-900);transition:all 0.25s ease;border:1px solid var(--border);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+            <div style="width:40px;height:40px;border-radius:12px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div>
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Yfirlit</div>
+              <div style="font-size:0.75rem;color:var(--ink-500);">Skoða tölfræði</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- System Health -->
+      <div class="panel" style="margin-bottom:24px;">
+        <h2>💚 Kerfisstaða</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+          <div style="padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;"></div>
+              <span style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">Gagnagrunnur</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--ink-500);">Tengdur og virkur</div>
+          </div>
+          <div style="padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;"></div>
+              <span style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">Netþjónn</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--ink-500);">Virkur á localhost:3000</div>
+          </div>
+          <div style="padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;"></div>
+              <span style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">WebSocket</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--ink-500);">Tengdur og virkur</div>
+          </div>
+          <div style="padding:16px;background:var(--bg-soft);border-radius:var(--radius-md);border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;"></div>
+              <span style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">Öryggi</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--ink-500);">Helmet & rate limiting virkt</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="panel">
+        <h2>🕒 Nýleg virkni</h2>
+        <div id="recentActivity" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="padding:12px;background:var(--bg-soft);border-radius:var(--radius-sm);border-left:4px solid var(--blue-500);">
+            <div style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">Kerfið ræst</div>
+            <div style="font-size:0.75rem;color:var(--ink-500);">Avara server er nú í gangi</div>
+          </div>
+          <div style="padding:12px;background:var(--bg-soft);border-radius:var(--radius-sm);border-left:4px solid var(--teal-500);">
+            <div style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">Nýir eiginleikar</div>
+            <div style="font-size:0.75rem;color:var(--ink-500);">Skýrslur, fríbeiðnir, markmið, námskeið og stofnunartre bætt við</div>
+          </div>
+          <div style="padding:12px;background:var(--bg-soft);border-radius:var(--radius-sm);border-left:4px solid var(--gold-400);">
+            <div style="font-weight:700;font-size:0.9rem;color:var(--ink-900);">Öryggisuppfærslur</div>
+            <div style="font-size:0.75rem;color:var(--ink-500);">Bcrypt hashing, rate limiting, og 2FA stuðningur bætt við</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    const defaults = {
+      headline: 'Avara hjálpar fyrirtækjum að vaxa',
+      subtitle: 'Við sjáum um bókhaldið svo þú getur einbeitt þér að vextinum.',
+      ctaText: 'Hafa samband'
+    };
+
+    const form = document.getElementById('adminForm');
+    const headlineInput = document.getElementById('headlineInput');
+    const subtitleInput = document.getElementById('subtitleInput');
+    const ctaInput = document.getElementById('ctaInput');
+    const previewHeading = document.getElementById('previewHeading');
+    const previewSubtitle = document.getElementById('previewSubtitle');
+    const previewCta = document.getElementById('previewCta');
+
+    const apiBase = (location.port && location.port !== '3000') ? 'http://localhost:3000' : '';
+    function apiFetch(path, opts) {
+      const fetchOpts = { ...opts };
+      // Include credentials only for cross-origin requests
+      if (apiBase) {
+        fetchOpts.credentials = 'include';
+      }
+      return fetch((apiBase || '') + path, fetchOpts);
+    }
+
+    async function parseJsonResponse(response) {
+      const text = await response.text();
+      if (!text) {
+        return {};
+      }
+
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        return {};
+      }
+    }
+
+    async function ensureLoggedIn() {
+      try {
+        const response = await apiFetch('/api/admin/session');
+        const payload = await parseJsonResponse(response);
+
+        if (!payload.loggedIn) {
+          window.location.href = 'Login.html';
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        window.location.href = 'Login.html';
+        return false;
+      }
+    }
+
+    async function loadSiteContent() {
+      try {
+        const response = await apiFetch('/api/admin/site-content', { credentials: 'same-origin' });
+        const payload = await parseJsonResponse(response);
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to load site content');
+        }
+
+        const content = payload.data || defaults;
+        applyFormValues(content);
+      } catch (error) {
+        applyFormValues(defaults);
+      }
+    }
+
+    function applyFormValues(content) {
+      headlineInput.value = content.headline || defaults.headline;
+      subtitleInput.value = content.subtitle || defaults.subtitle;
+      ctaInput.value = content.ctaText || defaults.ctaText;
+      previewHeading.textContent = content.headline || defaults.headline;
+      previewSubtitle.textContent = content.subtitle || defaults.subtitle;
+      previewCta.textContent = content.ctaText || defaults.ctaText;
+    }
+
+    async function saveContent(content) {
+      const response = await apiFetch('/api/admin/site-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(content)
+      });
+
+      const payload = await parseJsonResponse(response);
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || 'Unable to save content');
+      }
+
+      applyFormValues(payload.data || content);
+      return payload.data || content;
+    }
+
+    document.getElementById('chatBtn').addEventListener('click', function () {
+      window.location.href = (apiBase || '') + '/chat.html';
+    });
+
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener('click', () => app.toggleDarkMode());
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async function () {
+      try {
+        await apiFetch('/api/admin/logout', { method: 'POST' });
+      } catch (error) {
+        // ignore logout request issue and redirect anyway
+      }
+      window.location.href = (apiBase || '') + '/Login.html';
+    });
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const content = {
+        headline: headlineInput.value.trim() || defaults.headline,
+        subtitle: subtitleInput.value.trim() || defaults.subtitle,
+        ctaText: ctaInput.value.trim() || defaults.ctaText
+      };
+
+      try {
+        await saveContent(content);
+        alert('Efni forsíðu var vistað.');
+      } catch (error) {
+        alert(error.message || 'Ekki tókst að vista efni.');
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', async function () {
+      try {
+        await saveContent(defaults);
+        alert('Forsíðu efni var endurstillt.');
+      } catch (error) {
+        alert(error.message || 'Ekki tókst að endurstilla efni.');
+      }
+    });
+
+    async function initializeAdmin() {
+      const loggedIn = await ensureLoggedIn();
+      if (!loggedIn) return;
+      await loadSiteContent();
+      try {
+        await app.setupDarkMode();
+      } catch (e) {}
+    }
+
+    initializeAdmin();
+  </script>
+</body>
+</html>

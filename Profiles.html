@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notendur - Avara Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy-900: #0a1628;
+      --navy-800: #0f213e;
+      --navy-700: #16305a;
+      --navy-600: #1c3d68;
+      --blue-500: #2d5fd6;
+      --blue-400: #4d7df0;
+      --cyan-300: #67c1ff;
+      --cyan-200: #9fe7ff;
+      --teal-500: #10b981;
+      --teal-400: #34d399;
+      --gold-400: #ffd166;
+      --ink-900: #0f172a;
+      --ink-700: #334155;
+      --ink-500: #64748b;
+      --ink-300: #94a3b8;
+      --bg-soft: #f8fafc;
+      --white: #ffffff;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --gradient-primary: linear-gradient(135deg, #0f213e 0%, #1c3d68 50%, #2d5fd6 100%);
+      --gradient-accent: linear-gradient(135deg, #67c1ff 0%, #2d5fd6 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #eef3fb 0%, #f7f7f7 100%);
+      color: var(--ink-900);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(45, 95, 214, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 80%, rgba(103, 193, 255, 0.1) 0%, transparent 55%);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #eef3fb;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #1c3d68, #2d5fd6);
+      border-radius: 5px;
+      border: 2px solid #eef3fb;
+    }
+
+    ::selection {
+      background: rgba(45, 95, 214, 0.2);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--blue-500);
+      outline-offset: 2px;
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--gradient-primary);
+      color: white;
+      padding: 20px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(103, 193, 255, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 1;
+      font-family: 'Sora', 'Inter', sans-serif;
+    }
+
+    .header a, .header button {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      font-size: 13px;
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    .header a:hover, .header button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(11, 31, 54, 0.3);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .table-wrap {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      font-size: 0.9rem;
+    }
+
+    th {
+      color: var(--ink-500);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      font-weight: 700;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      border-bottom: 2px solid rgba(15, 23, 42, 0.08);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(45, 95, 214, 0.03);
+      transition: background 0.2s ease;
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+    }
+
+    .user-name {
+      font-weight: 700;
+      color: var(--ink-900);
+    }
+
+    .user-email {
+      font-size: 0.78rem;
+      color: var(--ink-500);
+      margin-top: 2px;
+    }
+
+    select {
+      border: 2px solid rgba(15, 23, 42, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      transition: all 0.25s ease;
+      background: white;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 4px rgba(45, 95, 214, 0.1);
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .role-badge.owner { background: #fde68a; color: #92400e; }
+    .role-badge.admin { background: #bfdbfe; color: #1e3a8a; }
+    .role-badge.employee { background: #e5e7eb; color: #374151; }
+
+    .note {
+      color: var(--ink-500);
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: var(--bg-soft);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .note::before {
+      content: "ℹ️";
+      font-size: 14px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .content {
+        padding: 20px;
+        overflow-x: auto;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <h1>Notendur og hlutverk</h1>
+      <a href="admin.html">← Til baka</a>
+    </header>
+
+    <div class="content">
+      <p class="note" id="permissionNote"></p>
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nafn</th>
+            <th>Netfang</th>
+            <th>Deild</th>
+            <th>Hlutverk</th>
+            <th>Staða</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiBase = (location.port && location.port !== '3000') ? 'http://localhost:3000' : '';
+    function apiFetch(path, opts) {
+      const fetchOpts = { ...opts };
+      if (apiBase) {
+        fetchOpts.credentials = 'include';
+      }
+      return fetch((apiBase || '') + path, fetchOpts);
+    }
+
+    async function parseJsonResponse(response) {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    }
+
+    const roleLabels = { owner: 'Eigandi', admin: 'Yfirmaður', employee: 'Starfsmaður' };
+    let currentUser = null;
+
+    async function ensureLoggedIn() {
+      try {
+        const response = await apiFetch('/api/admin/session');
+        const payload = await parseJsonResponse(response);
+        if (!payload.loggedIn) {
+          window.location.href = 'Login.html';
+          return null;
+        }
+        return payload.user;
+      } catch (error) {
+        window.location.href = 'Login.html';
+        return null;
+      }
+    }
+
+    function initials(name) {
+      return (name || '?').split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    function avatarHtml(user) {
+      const color = user.avatarColor || '#2d5fd6';
+      if (user.avatarUrl) {
+        return `<div class="user-avatar" style="background-image:url('${user.avatarUrl}');background-size:cover;background-position:center;"></div>`;
+      }
+      return `<div class="user-avatar" style="background:${color}">${initials(user.name || user.email)}</div>`;
+    }
+
+    async function loadUsers() {
+      try {
+        const response = await apiFetch('/api/admin/users');
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to load users');
+        }
+        renderUsers(payload.users || []);
+      } catch (error) {
+        document.getElementById('usersTableBody').innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`;
+      }
+    }
+
+    function renderUsers(users) {
+      const isOwner = currentUser && currentUser.role === 'owner';
+      const body = document.getElementById('usersTableBody');
+
+      body.innerHTML = users.map((user) => {
+        const roleCell = isOwner
+          ? `<select onchange="changeRole(${user.id}, this.value)">
+              ${['employee', 'admin', 'owner'].map((r) => `<option value="${r}" ${r === user.role ? 'selected' : ''}>${roleLabels[r]}</option>`).join('')}
+            </select>`
+          : `<span class="role-badge ${user.role}">${roleLabels[user.role] || user.role}</span>`;
+
+        const statusCell = isOwner
+          ? `<button class="toggle-active-btn" style="border:none;border-radius:999px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;${user.active ? 'background:#d1fae5;color:#065f46;' : 'background:#fee2e2;color:#991b1b;'}" onclick="toggleActive(${user.id}, ${!user.active})">
+              ${user.active ? '✓ Virkur' : '✗ Óvirkur'}
+            </button>`
+          : `<span class="role-badge ${user.active ? 'employee' : 'owner'}" style="${user.active ? '' : 'background:#fee2e2;color:#991b1b;'}">${user.active ? 'Virkur' : 'Óvirkur'}</span>`;
+
+        return `
+          <tr>
+            <td>
+              <div class="user-cell">
+                ${avatarHtml(user)}
+                <div>
+                  <div class="user-name">${user.name || '—'}</div>
+                </div>
+              </div>
+            </td>
+            <td><div class="user-email">${user.email}</div></td>
+            <td><div class="user-email">${user.department || '—'}</div></td>
+            <td>${roleCell}</td>
+            <td>${statusCell}</td>
+            <td>${isOwner && user.id !== currentUser.id ? `<button class="danger-remove-btn" style="border:none;border-radius:999px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;background:#fee2e2;color:#991b1b;" onclick="deleteUser(${user.id})" title="Eyða notanda">🗑</button>` : ''}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function toggleActive(userId, active) {
+      try {
+        const response = await apiFetch(`/api/admin/users/${userId}/active`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ active })
+        });
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to update user status');
+        }
+        alert(active ? 'Notandi virkjaður.' : 'Notandi gerður óvirkur.');
+        await loadUsers();
+      } catch (error) {
+        alert(error.message || 'Ekki tókst að uppfæra stöðu.');
+      }
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm('Ertu viss um að þú viljir eyða þessum notanda? Þetta er óafturkræft.')) return;
+      try {
+        const response = await apiFetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to delete user');
+        }
+        alert('Notanda eyddi.');
+        await loadUsers();
+      } catch (error) {
+        alert(error.message || 'Ekki tókst að eyða notanda.');
+      }
+    }
+
+    async function changeRole(userId, role) {
+      try {
+        const response = await apiFetch(`/api/admin/users/${userId}/role`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role })
+        });
+        const payload = await parseJsonResponse(response);
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to update role');
+        }
+        await loadUsers();
+      } catch (error) {
+        alert(error.message || 'Ekki tókst að uppfæra hlutverk.');
+        await loadUsers();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await ensureLoggedIn();
+      if (!currentUser) return;
+
+      if (currentUser.role !== 'admin' && currentUser.role !== 'owner') {
+        window.location.href = (apiBase || '') + '/Employee.html';
+        return;
+      }
+
+      document.getElementById('permissionNote').textContent = currentUser.role === 'owner'
+        ? 'Þú getur breytt hlutverkum starfsmanna hér að neðan.'
+        : 'Aðeins eigandi getur breytt hlutverkum starfsmanna.';
+
+      await loadUsers();
+    });
+  </script>
+</body>
+</html>

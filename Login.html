@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Avara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy-900: #0a1628;
+      --navy-800: #0f213e;
+      --navy-700: #16305a;
+      --navy-600: #1c3d68;
+      --blue-500: #2d5fd6;
+      --blue-400: #4d7df0;
+      --cyan-300: #67c1ff;
+      --cyan-200: #9fe7ff;
+      --teal-500: #10b981;
+      --teal-400: #34d399;
+      --gold-400: #ffd166;
+      --ink-900: #0f172a;
+      --ink-700: #334155;
+      --ink-500: #64748b;
+      --ink-300: #94a3b8;
+      --bg-soft: #f8fafc;
+      --white: #ffffff;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --gradient-primary: linear-gradient(135deg, #0f213e 0%, #1c3d68 50%, #2d5fd6 100%);
+      --gradient-accent: linear-gradient(135deg, #67c1ff 0%, #2d5fd6 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scrollbar-color: rgba(103, 193, 255, 0.4) transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #060d1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== ANIMATED AURORA BACKGROUND ===== */
+    .bg-scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #060d1a 0%, #0a1a33 50%, #0d1f3d 100%);
+    }
+
+    .bg-scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(45, 95, 214, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 30%, rgba(16, 185, 129, 0.18) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 80%, rgba(103, 193, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 85%, rgba(255, 209, 102, 0.1) 0%, transparent 40%);
+      animation: aurora 16s ease-in-out infinite alternate;
+    }
+
+    @keyframes aurora {
+      0% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+      100% { opacity: 0.8; transform: scale(1.02); }
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(45, 95, 214, 0.4);
+      top: -100px;
+      left: -100px;
+    }
+
+    .orb-2 {
+      width: 350px;
+      height: 350px;
+      background: rgba(16, 185, 129, 0.2);
+      bottom: -100px;
+      right: -80px;
+      animation-delay: -4s;
+    }
+
+    .orb-3 {
+      width: 250px;
+      height: 250px;
+      background: rgba(103, 193, 255, 0.25);
+      top: 50%;
+      left: 60%;
+      animation-delay: -8s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      33% { transform: translateY(-30px) translateX(20px); }
+      66% { transform: translateY(20px) translateX(-20px); }
+    }
+
+    /* Grid overlay */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(103, 193, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(103, 193, 255, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    }
+
+    .login-container {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      padding: 48px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.6s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-accent);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .login-logo {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1c3d68 0%, #2d5fd6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.2rem;
+      font-weight: 800;
+      box-shadow: 0 12px 32px rgba(45, 95, 214, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+
+    .login-logo::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(103, 193, 255, 0.2);
+      animation: pulse-ring 2.5s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    .login-header h1 {
+      color: #ffffff;
+      font-size: 28px;
+      margin: 0;
+      margin-bottom: 8px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-family: 'Sora', 'Inter', sans-serif;
+    }
+
+    .login-header p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 16px;
+      pointer-events: none;
+      transition: color 0.25s ease;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 18px 14px 44px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      transition: all 0.25s ease;
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--blue-400);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(45, 95, 214, 0.2);
+    }
+
+    .form-group input:focus ~ .input-icon,
+    .form-group input:focus + .input-icon {
+      color: var(--cyan-300);
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.4);
+      padding: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .password-toggle:hover {
+      color: var(--cyan-300);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gradient-accent);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-top: 16px;
+      font-family: inherit;
+      box-shadow: 0 8px 24px rgba(45, 95, 214, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .login-btn:hover::after {
+      left: 100%;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(45, 95, 214, 0.5);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .login-btn .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    .login-btn.loading .spinner {
+      display: block;
+    }
+
+    .login-btn.loading .btn-text {
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 28px 0;
+      gap: 12px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .divider-text {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    .social-btns {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .social-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+      border-color: rgba(103, 193, 255, 0.3);
+    }
+
+    .social-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .signup-section {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .signup-section p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin: 0 0 12px 0;
+    }
+
+    .signup-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: transparent;
+      color: var(--cyan-300);
+      border: 2px solid rgba(103, 193, 255, 0.3);
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .signup-btn:hover {
+      background: rgba(103, 193, 255, 0.1);
+      border-color: var(--cyan-300);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(45, 95, 214, 0.3);
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    .remember-forgot a {
+      color: var(--cyan-300);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .remember-forgot a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--blue-400);
+    }
+
+    .checkbox-wrapper label {
+      margin: 0;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+    }
+
+    .back-home {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 10;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+    }
+
+    .back-home:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-4px);
+    }
+
+    .back-home svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a1628;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #1c3d68, #2d5fd6);
+      border-radius: 5px;
+    }
+
+    ::selection {
+      background: rgba(45, 95, 214, 0.5);
+      color: #fff;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--cyan-300);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 32px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-home" href="Home.html">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+    Heim
+  </a>
+
+  <div class="bg-scene" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-logo">A</div>
+      <h1>Skrá inn</h1>
+      <p>Sign in to your Avara account</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="your@email.com" 
+            required
+          />
+          <span class="input-icon">✉️</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter your password" 
+            required
+          />
+          <span class="input-icon">🔒</span>
+          <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">👁️</button>
+        </div>
+      </div>
+
+      <div class="remember-forgot">
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="remember" name="remember" />
+          <label for="remember">Remember me</label>
+        </div>
+        <a href="#" id="forgotPasswordLink">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="login-btn" id="submitBtn">
+        <span class="spinner"></span>
+        <span class="btn-text">Sign In</span>
+      </button>
+    </form>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">OR CONTINUE WITH</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="social-btns">
+      <button class="social-btn" type="button" onclick="alert('Google login coming soon!')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.545 10.239v3.821h5.445c-.712 2.109-2.573 3.446-4.582 3.446-2.823 0-5.111-2.288-5.111-5.111s2.288-5.111 5.111-5.111c1.302 0 2.385.468 3.249 1.234l2.75-2.75C18.118 4.013 15.821 3 13.091 3 8.028 3 4 7.028 4 12s4.028 9 9 9c5.364 0 8.909-3.773 8.909-9.091 0-.611-.055-1.2-.159-1.77l-9.205-.9z"/></svg>
+        Google
+      </button>
+      <button class="social-btn" type="button" onclick="alert('Microsoft login coming soon!')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.37 12.93c-.73-.48-1.64-.75-2.59-.75H6.5v3h2.28c.95 0 1.86-.27 2.59-.75.74-.49 1.13-1.16 1.13-1.75s-.39-1.26-1.13-1.75zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.88 15.54c-1.13.75-2.63 1.13-4.5 1.13H5.5v-13h3.88c1.87 0 3.37.38 4.5 1.13 1.13.75 1.69 1.87 1.69 3.37s-.56 2.62-1.69 3.37zm4.62-3.29h-1.5v1.5h-1.5v-1.5h-1.5v-1.5h1.5v-1.5h1.5v1.5h1.5v1.5z"/></svg>
+        Microsoft
+      </button>
+    </div>
+
+    <div class="signup-section">
+      <p>Don't have an account?</p>
+      <a href="Signup.html" class="signup-btn">Create Account</a>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-overlay" id="forgotModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;align-items:center;justify-content:center;padding:20px;">
+    <div class="modal" style="background:rgba(15,23,42,0.95);backdrop-filter:blur(24px);border-radius:var(--radius-lg);box-shadow:0 30px 80px rgba(0,0,0,0.5);padding:40px;width:100%;max-width:420px;border:1px solid rgba(255,255,255,0.1);">
+      <h2 style="color:#fff;font-size:24px;font-weight:800;margin-bottom:8px;font-family:'Sora',sans-serif;letter-spacing:-0.03em;">Endurstilla lykilorð</h2>
+      <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:24px;">Enter your email and we'll send you a reset link.</p>
+      <div class="form-group" style="margin-bottom:20px;">
+        <label for="forgotEmail" style="display:block;color:rgba(255,255,255,0.8);font-weight:600;margin-bottom:8px;font-size:14px;">Email Address</label>
+        <div class="input-wrap" style="position:relative;">
+          <input type="email" id="forgotEmail" placeholder="your@email.com" required style="width:100%;padding:14px 18px;border:2px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);font-size:14px;background:rgba(255,255,255,0.05);color:#fff;font-family:inherit;transition:all 0.25s ease;" />
+        </div>
+      </div>
+      <button type="button" class="login-btn" id="forgotSubmitBtn" style="width:100%;padding:16px;background:var(--gradient-accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(45,95,214,0.4);">Send Reset Link</button>
+      <p class="status-msg" id="forgotStatus" style="margin-top:12px;font-size:14px;font-weight:600;text-align:center;color:#34d399;display:none;"></p>
+    </div>
+  </div>
+
+  <script>
+    console.log('Login page loaded');
+
+    const apiBase = (location.port && location.port !== '3000') ? 'http://localhost:3000' : '';
+    function apiFetch(path, opts) {
+      const fetchOpts = { ...opts };
+      // Include credentials only for cross-origin requests
+      if (apiBase) {
+        fetchOpts.credentials = 'include';
+      }
+      return fetch((apiBase || '') + path, fetchOpts);
+    }
+
+    async function parseJsonResponse(response) {
+      const text = await response.text();
+      console.log('Response text:', text);
+      if (!text) {
+        return {};
+      }
+
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        throw new Error('The server returned an invalid response. Please try again.');
+      }
+    }
+
+    // Password visibility toggle
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Load saved credentials if "Remember me" was checked
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('avara_login_remember');
+      const rememberEl = document.getElementById('remember') || document.getElementById('rememberMe');
+      if (saved) {
+        const { email, password } = JSON.parse(saved);
+        const emailEl = document.getElementById('email');
+        const passEl = document.getElementById('password');
+        if (emailEl) emailEl.value = email;
+        if (passEl) passEl.value = password;
+        if (rememberEl) rememberEl.checked = true;
+      }
+    });
+
+    // Forgot password modal
+    document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('forgotModal').style.display = 'flex';
+      document.getElementById('forgotEmail').focus();
+    });
+
+    document.getElementById('forgotModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+      }
+    });
+
+    document.getElementById('forgotSubmitBtn').addEventListener('click', async function() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      const statusEl = document.getElementById('forgotStatus');
+      const submitBtn = document.getElementById('forgotSubmitBtn');
+
+      if (!email) {
+        statusEl.textContent = 'Please enter your email.';
+        statusEl.style.color = '#f87171';
+        statusEl.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      statusEl.style.display = 'none';
+
+      try {
+        const apiBase = (location.port && location.port !== '3000') ? 'http://localhost:3000' : '';
+        const response = await fetch((apiBase || '') + '/api/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const payload = await response.json().catch(() => ({}));
+
+        statusEl.textContent = 'If an account exists with that email, a reset link has been sent. Check the server console for the link.';
+        statusEl.style.color = '#34d399';
+        statusEl.style.display = 'block';
+
+        if (payload.resetLink) {
+          console.log('Reset link (dev):', payload.resetLink);
+        }
+      } catch (error) {
+        statusEl.textContent = error.message || 'Something went wrong. Please try again.';
+        statusEl.style.color = '#f87171';
+        statusEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Reset Link';
+      }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      console.log('Login form submitted');
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const rememberEl = document.getElementById('remember') || document.getElementById('rememberMe');
+      const rememberMe = rememberEl ? rememberEl.checked : false;
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+
+      try {
+        console.log('Sending fetch request to /api/admin/login (via apiBase="' + apiBase + '")');
+        const response = await apiFetch('/api/admin/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        console.log('Response status:', response.status, response.ok);
+        const payload = await parseJsonResponse(response);
+        console.log('Payload:', payload);
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Invalid email or password.');
+        }
+
+        // Save credentials if "Remember me" is checked
+        if (rememberMe) {
+          localStorage.setItem('avara_login_remember', JSON.stringify({ email, password }));
+        } else {
+          localStorage.removeItem('avara_login_remember');
+        }
+
+        console.log('Login successful, redirecting to:', payload.redirect || 'admin.html');
+        window.location.href = payload.redirect || 'admin.html';
+      } catch (error) {
+        console.error('Login error:', error);
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+        alert(error.message || 'Invalid email or password.');
+      }
+    });
+  </script>
+</body>
+</html>
