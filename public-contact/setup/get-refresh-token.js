@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const [tenantId, clientId, expectedEmail = 'website@avara.is'] = process.argv.slice(2);
+const [tenantId, clientId, expectedEmail = 'avara@avara.is'] = process.argv.slice(2);
 if (!tenantId || !clientId) {
   console.error('Usage: node setup/get-refresh-token.js <tenant-id> <client-id> [mailbox-email]');
   process.exit(1);
