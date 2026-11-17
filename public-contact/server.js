@@ -1,5 +1,6 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const fs = require('fs');
 const path = require('path');
 
 const NOTIFICATION_MAILBOX = 'avara@avara.is';
@@ -147,11 +148,23 @@ function createApp({ env = process.env, fetchImpl = fetch } = {}) {
 }
 
 if (require.main === module) {
+  const env = { ...process.env };
+  const secretFile = '/etc/secrets/avara-contact-api.env';
+  if (fs.existsSync(secretFile)) {
+    const secretLines = fs.readFileSync(secretFile, 'utf8').split(/\r?\n/);
+    for (const line of secretLines) {
+      const match = /^(MS_TENANT_ID|MS_CLIENT_ID|MS_REFRESH_TOKEN)=(.+)$/.exec(line);
+      if (match && !env[match[1]]) {
+        env[match[1]] = match[2];
+      }
+    }
+  }
+
   const port = process.env.PORT || 3000;
-  const app = createApp();
+  const app = createApp({ env });
   app.listen(port, () => {
     console.log(`Avara public site listening on port ${port}`);
-    if (!process.env.MS_TENANT_ID || !process.env.MS_CLIENT_ID || !process.env.MS_REFRESH_TOKEN) {
+    if (!env.MS_TENANT_ID || !env.MS_CLIENT_ID || !env.MS_REFRESH_TOKEN) {
       console.warn('Microsoft Graph is not configured; contact submissions will return an error.');
     }
   });
