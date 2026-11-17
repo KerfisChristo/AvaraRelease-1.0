@@ -1274,6 +1274,7 @@
   <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
 
   <script>
+    const CONTACT_API_URL = 'https://avara-contact-api.onrender.com/api/contact';
     const defaults = {
       headline: 'Avara hjálpar fyrirtækjum að vaxa',
       subtitle: 'Við sjáum um bókhaldið svo þú getur einbeitt þér að vextinum.',
@@ -1404,7 +1405,7 @@
       formStatus.className = 'form-status';
 
       try {
-        const response = await fetch('/api/contact', {
+        const response = await fetch(CONTACT_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, message, captchaAnswer })
