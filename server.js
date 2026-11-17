@@ -1763,7 +1763,7 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     }
 
     const emailSent = await sendMail({
-      to: 'website@avara.is',
+      to: 'avara@avara.is',
       subject: 'Ný fyrirspurn á vefsíðu Avara',
       text: `Ný fyrirspurn frá vefsíðunni Avara.\nNetfang sendanda er ekki staðfest — farðu varlega með tengla og viðhengi.\n\nNafn: ${cleanName}\nNetfang (óstaðfest): ${cleanEmail}\n\nSkilaboð:\n${cleanMessage}`
     });
