@@ -8,15 +8,15 @@ The Entra app is single-tenant and uses delegated `Mail.Send` only. It must not 
 
 1. In the app registration, enable **Allow public client flows** (device code flow).
 2. Add **Microsoft Graph → Delegated permissions → Mail.Send**. Do not add application permissions.
-3. Sign in as `avara@avara.is` and consent to the requested send-only scope.
+3. Sign in as `website@avara.is` and consent to the requested send-only scope. The service sends notifications to `avara@avara.is`.
 4. On a machine with Node.js 18+, run:
 
    ```powershell
    node setup/get-refresh-token.js <tenant-id> <client-id>
    ```
 
-   Complete Microsoft's device sign-in as `avara@avara.is`. The script saves the refresh token to `.env.local`; that file is git-ignored. Never commit or share it.
-5. In Render, set `MS_TENANT_ID`, `MS_CLIENT_ID`, and `MS_REFRESH_TOKEN` from `.env.local` as secret environment variables. Set `ALLOWED_ORIGINS` to the exact origin of the public Static Site (for example, `https://avararelease-1-0-4exs.onrender.com`). Do not paste the token into chat or source control.
+   Complete Microsoft's device sign-in as `website@avara.is`. The script saves the refresh token to `.env.local`; that file is git-ignored. Never commit or share it.
+5. In Render, upload `.env.local` as a Secret File named `avara-contact-api.env`. The service reads the Microsoft credentials from `/etc/secrets/avara-contact-api.env`. Set `ALLOWED_ORIGINS` to the exact origin of the public Static Site (for example, `https://avararelease-1-0-4exs.onrender.com`). Do not paste the token into chat or source control.
 6. Send a test inquiry and confirm the notification arrives only at `avara@avara.is`.
 
 The static homepage's `CONTACT_API_URL` must match the deployed web service URL.
