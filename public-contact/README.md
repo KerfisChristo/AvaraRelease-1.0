@@ -1,6 +1,6 @@
 # Avara public contact service
 
-This small Render service serves only the public homepage and its contact endpoint. Contact submissions generate a notification only to `website@avara.is`; the sender address is included as unverified text and is not used as `Reply-To`. The service does not send email to the visitor, and no forwarding is configured.
+This Render web service exposes the contact API; the public homepage is hosted separately as a Render Static Site. Contact submissions generate a notification only to `website@avara.is`; the sender address is included as unverified text and is not used as `Reply-To`. The service does not send email to the visitor, and no forwarding is configured.
 
 ## Microsoft Graph setup
 
@@ -16,7 +16,9 @@ The Entra app is single-tenant and uses delegated `Mail.Send` only. It must not 
    ```
 
    Complete Microsoft's device sign-in as `website@avara.is`. The script saves the refresh token to `.env.local`; that file is git-ignored. Never commit or share it.
-5. In Render, set `MS_TENANT_ID`, `MS_CLIENT_ID`, and `MS_REFRESH_TOKEN` from `.env.local` as secret environment variables. Do not paste the token into chat or source control.
+5. In Render, set `MS_TENANT_ID`, `MS_CLIENT_ID`, and `MS_REFRESH_TOKEN` from `.env.local` as secret environment variables. Set `ALLOWED_ORIGINS` to the exact origin of the public Static Site (for example, `https://avararelease-1-0-4exs.onrender.com`). Do not paste the token into chat or source control.
 6. Send a test inquiry and confirm the notification arrives only at `website@avara.is`.
+
+The static homepage's `CONTACT_API_URL` must match the deployed web service URL.
 
 Delegated refresh tokens can expire or be revoked. If submissions begin returning an error after a token expires, rerun the device sign-in and replace `MS_REFRESH_TOKEN` in Render.

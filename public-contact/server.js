@@ -10,6 +10,27 @@ function createApp({ env = process.env, fetchImpl = fetch } = {}) {
   app.set('trust proxy', 1);
   app.use(express.json({ limit: '10kb' }));
 
+  const allowedOrigins = new Set(
+    (env.ALLOWED_ORIGINS || '').split(',').map(origin => origin.trim()).filter(Boolean)
+  );
+  app.use('/api/contact', (req, res, next) => {
+    const origin = req.get('Origin');
+    if (origin && allowedOrigins.has(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+      res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+      if (req.method === 'OPTIONS') {
+        return res.sendStatus(204);
+      }
+    } else if (req.method === 'OPTIONS') {
+      return res.sendStatus(403);
+    } else if (origin && allowedOrigins.size > 0) {
+      return res.status(403).json({ ok: false, error: 'Origin not allowed.' });
+    }
+    return next();
+  });
+
   const contactLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 5,
