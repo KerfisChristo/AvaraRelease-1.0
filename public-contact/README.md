@@ -15,7 +15,7 @@ The Entra app is single-tenant and uses delegated `Mail.Send` only. It must not 
    node setup/get-refresh-token.js <tenant-id> <client-id>
    ```
 
-   Complete Microsoft's device sign-in as `website@avara.is`. The script saves the refresh token to `.env.local`; that file is git-ignored. Never commit or share it.
+   Complete Microsoft's device sign-in as `avara@avara.is`. The script saves the refresh token to `.env.local`; that file is git-ignored. Never commit or share it.
 5. In Render, set `MS_TENANT_ID`, `MS_CLIENT_ID`, and `MS_REFRESH_TOKEN` from `.env.local` as secret environment variables. Set `ALLOWED_ORIGINS` to the exact origin of the public Static Site (for example, `https://avararelease-1-0-4exs.onrender.com`). Do not paste the token into chat or source control.
 6. Send a test inquiry and confirm the notification arrives only at `avara@avara.is`.
 
