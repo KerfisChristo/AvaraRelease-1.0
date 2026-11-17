@@ -53,7 +53,7 @@ before(async () => {
       }
       assert.equal(url, 'https://graph.microsoft.com/v1.0/me/sendMail');
       const request = JSON.parse(options.body);
-      assert.equal(request.message.toRecipients[0].emailAddress.address, 'website@avara.is');
+      assert.equal(request.message.toRecipients[0].emailAddress.address, 'avara@avara.is');
       assert.equal(request.message.replyTo, undefined);
       assert.match(request.message.body.content, /Netfang \(óstaðfest\): test@example.com/);
       assert.match(request.message.body.content, /A test inquiry/);
