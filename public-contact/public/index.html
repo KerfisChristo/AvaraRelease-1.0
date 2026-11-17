@@ -1213,11 +1213,11 @@
           <span style="font-size:0.85rem;color:var(--ink-500);">789-4423</span>
         </span>
       </a>
-      <a href="mailto:website@avara.is" style="display:flex;align-items:center;gap:12px;padding:16px 18px;background:var(--bg-soft);border:1px solid rgba(15,23,42,0.08);border-radius:var(--radius-md);text-decoration:none;transition:all 0.25s ease;" onmouseover="this.style.borderColor='rgba(45,95,214,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(15,23,42,0.08)';this.style.transform='translateY(0)'">
+      <a href="mailto:avara@avara.is" style="display:flex;align-items:center;gap:12px;padding:16px 18px;background:var(--bg-soft);border:1px solid rgba(15,23,42,0.08);border-radius:var(--radius-md);text-decoration:none;transition:all 0.25s ease;" onmouseover="this.style.borderColor='rgba(45,95,214,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(15,23,42,0.08)';this.style.transform='translateY(0)'">
         <span style="width:40px;height:40px;flex-shrink:0;border-radius:10px;background:var(--gradient-accent);display:flex;align-items:center;justify-content:center;font-size:18px;">✉️</span>
         <span>
           <strong style="display:block;font-size:0.9rem;color:var(--ink-900);">Netfang</strong>
-          <span style="font-size:0.85rem;color:var(--ink-500);">website@avara.is</span>
+          <span style="font-size:0.85rem;color:var(--ink-500);">avara@avara.is</span>
         </span>
       </a>
     </div>
@@ -1262,7 +1262,7 @@
         <div style="font-size:0.78rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">Hafa samband</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;color:#93a5c2;">
           <a href="tel:+3547894423" style="color:#93a5c2;text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='#9fe7ff'" onmouseout="this.style.color='#93a5c2'">📞 789-4423</a>
-          <a href="mailto:website@avara.is" style="color:#93a5c2;text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='#9fe7ff'" onmouseout="this.style.color='#93a5c2'">✉️ website@avara.is</a>
+          <a href="mailto:avara@avara.is" style="color:#93a5c2;text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='#9fe7ff'" onmouseout="this.style.color='#93a5c2'">✉️ avara@avara.is</a>
         </div>
       </div>
     </div>
@@ -1417,7 +1417,7 @@
           payload = JSON.parse(responseText);
         } catch (parseError) {
           console.error('Contact form received a non-JSON response:', response.status, parseError);
-          throw new Error('Netþjónninn skilaði ógildu svari. Hafðu samband við okkur í website@avara.is.');
+          throw new Error('Netþjónninn skilaði ógildu svari. Hafðu samband við okkur í avara@avara.is.');
         }
 
         if (!response.ok || !payload.ok) {
@@ -1429,7 +1429,7 @@
         contactForm.reset();
       } catch (error) {
         formStatus.textContent = error instanceof TypeError
-          ? 'Náðist ekki samband við netþjóninn. Reyndu aftur síðar eða sendu okkur tölvupóst á website@avara.is.'
+          ? 'Náðist ekki samband við netþjóninn. Reyndu aftur síðar eða sendu okkur tölvupóst á avara@avara.is.'
           : error.message || 'Ekki tókst að senda skilaboð.';
         formStatus.className = 'form-status error';
       } finally {
