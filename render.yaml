@@ -2,7 +2,7 @@
 # its database are intentionally not included in this service.
 services:
   - type: web
-    name: avara-site
+    name: avara-contact-api
     env: node
     plan: free
     rootDir: public-contact
@@ -17,4 +17,6 @@ services:
       - key: MS_CLIENT_ID
         sync: false
       - key: MS_REFRESH_TOKEN
+        sync: false
+      - key: ALLOWED_ORIGINS
         sync: false
