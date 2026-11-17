@@ -2,7 +2,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 
-const NOTIFICATION_MAILBOX = 'website@avara.is';
+const NOTIFICATION_MAILBOX = 'avara@avara.is';
 const GRAPH_SCOPE = 'https://graph.microsoft.com/Mail.Send offline_access';
 
 function createApp({ env = process.env, fetchImpl = fetch } = {}) {
