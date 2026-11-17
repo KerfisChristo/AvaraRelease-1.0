@@ -15,23 +15,33 @@ async function startServer(options) {
   const address = server.address();
   return {
     server,
-    post: body => fetch(`http://127.0.0.1:${address.port}/api/contact`, {
+    post: (body, extraHeaders = {}) => fetch(`http://127.0.0.1:${address.port}/api/contact`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...extraHeaders },
       body: JSON.stringify(body)
+    }),
+    options: (origin, requestedMethod = 'POST') => fetch(`http://127.0.0.1:${address.port}/api/contact`, {
+      method: 'OPTIONS',
+      headers: {
+        Origin: origin,
+        'Access-Control-Request-Method': requestedMethod,
+        'Access-Control-Request-Headers': 'content-type'
+      }
     })
   };
 }
 
 let server;
 let post;
+let options;
 
 before(async () => {
-  ({ server, post } = await startServer({
+  ({ server, post, options } = await startServer({
     env: {
       MS_TENANT_ID: 'tenant-id',
       MS_CLIENT_ID: 'client-id',
-      MS_REFRESH_TOKEN: 'refresh-token'
+      MS_REFRESH_TOKEN: 'refresh-token',
+      ALLOWED_ORIGINS: 'https://avararelease-1-0-4exs.onrender.com'
     },
     fetchImpl: async (url, options) => {
       if (String(url).includes('/oauth2/v2.0/token')) {
@@ -78,8 +88,20 @@ test('rejects an incorrect captcha answer', async () => {
   assert.equal(response.status, 400);
 });
 
+test('allows preflight requests from the configured static site', async () => {
+  const response = await options('https://avararelease-1-0-4exs.onrender.com');
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get('access-control-allow-origin'), 'https://avararelease-1-0-4exs.onrender.com');
+});
+
+test('rejects requests from an unconfigured origin', async () => {
+  const response = await post(validSubmission, { Origin: 'https://untrusted.example' });
+  assert.equal(response.status, 403);
+});
+
 test('sends valid inquiries through Microsoft Graph', async () => {
-  const response = await post(validSubmission);
+  const response = await post(validSubmission, { Origin: 'https://avararelease-1-0-4exs.onrender.com' });
   assert.equal(response.status, 200);
+  assert.equal(response.headers.get('access-control-allow-origin'), 'https://avararelease-1-0-4exs.onrender.com');
   assert.deepEqual(await response.json(), { ok: true });
 });
